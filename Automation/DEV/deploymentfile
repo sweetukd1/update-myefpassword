@@ -1,0 +1,39 @@
+pipeline {
+    options
+    {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+    }
+	agent { label 'MyEFAgent' }
+//	agent any
+	stages {
+		stage('BuildStage') {
+			steps {
+				
+				  dir(path: 'Automation') {
+				  bat 'Build.bat'
+				}
+				
+			  }
+		}
+		
+		stage ('deployment') {
+			steps {				
+				  dir(path: 'Automation/DEV') {
+				  bat 'image.bat'
+				}	
+			 }
+		}
+	}
+	post {
+		failure {
+			emailext ( 
+			body: '''${SCRIPT, template="MyEmailFormat.template"}''',
+				mimeType: 'text/html',
+				subject: "[Jenkins] ${currentBuild.fullDisplayName}",
+				to: "build.admins@ef.com",
+				replyTo: "build.admins@ef.com",
+				recipientProviders: [[$class: 'CulpritsRecipientProvider']]
+				)
+		}
+	}
+}

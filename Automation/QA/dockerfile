@@ -1,0 +1,15 @@
+FROM microsoft/dotnet-framework:4.7.1
+
+WORKDIR myefpassword
+
+COPY . .
+
+#Set ENV Variable - Get-Childitem Env:ENVIRONMENT
+
+SHELL ["powershell"]
+ 
+#RUN setx ENVIRONMENT QA /M ; \
+#	setx ACCOUNT MYEF /M
+
+#ENTRYPOINT ["UpdateMyEFPassword.exe"]
+
